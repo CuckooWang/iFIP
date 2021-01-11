@@ -3,7 +3,7 @@ Inference of functional interacting partners
 
 ## The description of each source code
 ### KnownAutophagy.py
-For genes interacted with Atg9, calculate the number of interacted known Atg proteins and autophagy regulators from THANATOS (http://thanatos.biocuckoo.org/).
+For genes interacted with Atg9, calculate the numbers of interacted known Atg proteins and autophagy regulators from THANATOS (http://thanatos.biocuckoo.org/).
 ### GetRawScore.py
 For genes interacted with Atg9, get the raw scores from mRNA, protein and PPI levels for further training.
 ### LGTraining.py
