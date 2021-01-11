@@ -1,0 +1,78 @@
+from sklearn.datasets import load_iris
+from sklearn import datasets
+from sklearn.linear_model import  LogisticRegression
+
+from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.metrics import roc_auc_score
+
+def predict():
+    f0 = open("InteratedAutophagyGenes.txt","r")
+    dict_sam = {}
+    for line in f0.readlines():
+        sp = line.strip().split("\t")
+        gene = sp[0]
+        type = sp[1]
+        dict_sam[gene] = type
+
+    f1 = open("rawscore.txt","r")
+    list_x = []
+    list_y = []
+    for line in f1.readlines():
+        sp = line.strip().split("\t")
+        gene = sp[1]
+        x1 = float(sp[3])
+        x2 = float(sp[4])
+        x3 = float(sp[5])
+        list = []
+        list.append(x1)
+        list.append(x2)
+        list.append(x3)
+        list_x.append(list)
+        type = dict_sam[gene]
+        if type == "1":
+            list_y.append(1)
+        else:
+            list_y.append(0)
+
+    X = np.array(list_x)
+    Y = np.array(list_y)
+    cls = LogisticRegression(max_iter=1000,n_jobs=10)
+    cls.fit(X,Y)
+    print("Coefficients:%s, intercept %s" % (cls.coef_, cls.intercept_))
+    #print(cls.predict(X))
+    coe1 = cls.coef_[0][0]
+    coe2 = cls.coef_[0][1]
+    coe3 = cls.coef_[0][2]
+    f1 = open(r"I:\ATG9\rawscore.txt", "r")
+    fw = open(r"I:\ATG9\LG_score.txt", "w")
+    y_t = []
+    y_s = []
+    for line in f1.readlines():
+        sp = line.strip().split("\t")
+        gene = sp[1]
+        x1 = float(sp[3])
+        x2 = float(sp[4])
+        x3 = float(sp[5])
+        score = x1*coe1 + x2*coe2 + x3*coe3 + cls.intercept_[0]
+        y_s.append(score)
+        type = dict_sam[gene]
+        fw.write(gene + "\t" + str(score) + "\t" + type + "\n")
+        if type == "1":
+            y_t.append(1)
+        else:
+            y_t.append(0)
+    y_true = np.array(y_t)
+    y_scores = np.array(y_s)
+    print("AUC:" + str(roc_auc_score(y_true,y_scores)))
+    fw.write("AUC:%s" % (roc_auc_score(y_true, y_scores)))
+    fw.flush()
+    fw.close()
+    list_coe = []
+    list_coe.append(coe1)
+    list_coe.append(coe2)
+    list_coe.append(coe3)
+
+    return list_coe
+
+predict()
