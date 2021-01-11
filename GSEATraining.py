@@ -71,16 +71,12 @@ def ESscore(list_coe,dict_exp):
                    permutation_num=1000,  # skip permutation procedure, because you do need it
                    no_plot=True,  # skip plotting to speed up
                    processes=4, format='png')
-    #每次循环都需要删除临时文件，因为GSEApy是个SB，会直接在文件的后面写入！！！！！
-
     es = readES()
     if es == -100.0:
         print("Wrong")
     return es
 
 def generateTem(list_coe,dict_exp):
-    #专门用来生成GSEA要得表达量数据的临时文件
-    # 得分一直在变因此要建立临时文件
     fw = open("expression_tem.gct", "w")
     fw.write("#1.2" + "\n")
     fw.write("#201" + "\t" + "1" + "\n")
@@ -104,7 +100,6 @@ def readES():
     else:
         print("Wrong")
     return es
-
 def mutation(list_coe,step):
     pntem = random.randint(-1, 1)
     nstep = step
@@ -122,7 +117,6 @@ def mutation(list_coe,step):
         index = 2
     else:
         print("Wrong")
-
     tem_coe = copy.deepcopy(list_coe)
     tem_coe[index] = tem_coe[index] + nstep
     return tem_coe
